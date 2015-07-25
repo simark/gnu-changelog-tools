@@ -48,7 +48,7 @@ def extract_changelog_entries(commit_msg):
             skip = skip - 1
             continue
 
-        if current_changelog_file != None:
+        if current_changelog_file is not None:
             if len(line) > 0 and line[0] == '\t':
                 entries[current_changelog_file].append(line)
             else:
