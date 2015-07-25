@@ -5,14 +5,8 @@ import subprocess
 import time
 
 
-def execute(cmd, dry_run, check=True):
-    if not dry_run:
-        if check:
-            subprocess.check_call(cmd)
-        else:
-            subprocess.call(cmd)
-    else:
-        print(' '.join(cmd))
+def execute(cmd):
+    subprocess.check_call(cmd)
 
 
 def get_output(cmd_list):
@@ -87,9 +81,8 @@ def write_changelog_entries(entries):
 
 def amend_commit(entries):
     changelog_files = list(entries.keys())
-    execute(['git', 'add'] + changelog_files, dry_run=False, check=True)
-    execute(['git', 'commit', '--amend', '--reset-author', '-m', ''],
-            dry_run=False, check=True)
+    execute(['git', 'add'] + changelog_files)
+    execute(['git', 'commit', '--amend', '--reset-author', '-m', ''])
 
 
 def main():
