@@ -12,7 +12,7 @@ operation on many commits.
 Example
 -------
 
-Here is an example that uses `changelog-git-amend` with git rebase.
+Here is an example that uses `changelog-git-amend` with `git rebase`.
 
 ```
 $ git rebase master -i --exec changelog-git-amend.py
