@@ -15,7 +15,7 @@ Example
 Here is an example that uses `changelog-git-amend` with `git rebase`.
 
 ```
-$ git rebase master -i --exec changelog-git-amend.py
+$ EDITOR=/bin/true git rebase master -i --exec changelog-git-amend.py
 Executing: /home/simark/src/gnu-changelog-tools/changelog-git-amend/changelog-git-amend.py
 [detached HEAD 13ee93e] Factor out print_unpacked_pointer from generic_val_print
  2 files changed, 37 insertions(+), 17 deletions(-)
