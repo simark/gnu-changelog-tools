@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import re
 import subprocess
 import time
@@ -64,7 +65,7 @@ def extract_changelog_entries(commit_msg):
     return entries
 
 
-def write_changelog_entries(entries):
+def write_changelog_entries(entries, gitroot):
     header = get_changelog_header()
 
     for path, line_list in entries.items():
@@ -73,23 +74,33 @@ def write_changelog_entries(entries):
             '\n'.join(line_list) + \
             '\n' + \
             '\n'
-        with open(path, 'r+') as f:
+        with open(os.path.join(gitroot, path), 'r+') as f:
             data = to_add + f.read()
             f.seek(0)
             f.write(data)
 
 
-def amend_commit(entries):
-    changelog_files = list(entries.keys())
+def amend_commit(entries, gitroot):
+    changelog_files = [os.path.join(gitroot, x) for x in entries.keys()]
     execute(['git', 'add'] + changelog_files)
     execute(['git', 'commit', '--amend', '--reset-author', '-m', ''])
 
 
+def find_git_root():
+    return get_output(['git', 'rev-parse', '--show-toplevel'])
+
+
 def main():
+    try:
+        gitroot = find_git_root()
+    except subprocess.CalledProcessError:
+        print('It seems we are not in a git repo.')
+        sys.exit(1)
+
     commit_msg = get_commit_message()
     changelogs = extract_changelog_entries(commit_msg)
-    write_changelog_entries(changelogs)
-    amend_commit(changelogs)
+    write_changelog_entries(changelogs, gitroot)
+    amend_commit(changelogs, gitroot)
 
 if __name__ == '__main__':
     main()
