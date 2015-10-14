@@ -13,12 +13,13 @@ The ChangeLog content should be laid out this way:
 
 ```
 path/to/ChangeLog:
-
-        * ChangeLog content...
-        
+<empty line>
+<tab>* ChangeLog content...
+<empty line>
 path/to/otherChangeLog:
-
-        * Other ChangeLog content...
+<empty line>
+<tab>* Other ChangeLog content...
+<empty line>
 ```
 
 Example
