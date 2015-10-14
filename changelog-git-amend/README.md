@@ -11,6 +11,7 @@ operation on many commits.
 
 The ChangeLog content should be laid out this way:
 
+```
 path/to/ChangeLog:
 
         * ChangeLog content...
@@ -18,6 +19,7 @@ path/to/ChangeLog:
 path/to/otherChangeLog:
 
         * Other ChangeLog content...
+```
 
 Example
 -------
