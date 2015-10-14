@@ -9,6 +9,16 @@ It can be used standalone, where it will work on the currently checked out
 commit.  It can also be used in conjunction with git rebase to apply the
 operation on many commits.
 
+The ChangeLog content should be laid out this way:
+
+path/to/ChangeLog:
+
+        * ChangeLog content...
+        
+path/to/otherChangeLog:
+
+        * Other ChangeLog content...
+
 Example
 -------
 
