@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import email.utils
 import os
 import re
 import subprocess
@@ -18,8 +19,10 @@ def get_output(cmd_list):
 def get_commit_message():
     return get_output(['git', 'log', '--format=format:%B', '-n', '1', 'HEAD'])
 
+def get_date_rfc2822():
+    return email.utils.formatdate(localtime=True)
 
-def get_date():
+def get_date_for_changelog():
     return time.strftime('%Y-%m-%d')
 
 
@@ -32,7 +35,7 @@ def get_author_email():
 
 
 def get_changelog_header():
-    return '{}  {}  <{}>'.format(get_date(),
+    return '{}  {}  <{}>'.format(get_date_for_changelog(),
                                  get_author_name(),
                                  get_author_email())
 
@@ -84,7 +87,9 @@ def write_changelog_entries(entries, gitroot):
 def amend_commit(entries, gitroot):
     changelog_files = [os.path.join(gitroot, x) for x in entries.keys()]
     execute(['git', 'add'] + changelog_files)
-    execute(['git', 'commit', '--amend', '--reset-author', '-m', ''])
+    execute(['git', 'commit', '--amend',
+             '--date', get_date_rfc2822(),
+             '-m', ''])
 
 
 def find_git_root():
