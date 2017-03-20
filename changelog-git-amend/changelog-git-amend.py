@@ -86,10 +86,10 @@ def write_changelog_entries(entries, gitroot):
 
 def amend_commit(entries, gitroot):
     changelog_files = [os.path.join(gitroot, x) for x in entries.keys()]
+    os.environ['EDITOR'] = '/bin/true'
     execute(['git', 'add'] + changelog_files)
     execute(['git', 'commit', '--amend',
-             '--date', get_date_rfc2822(),
-             '-m', ''])
+             '--date', get_date_rfc2822()])
 
 
 def find_git_root():
