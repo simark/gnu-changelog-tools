@@ -34,16 +34,27 @@ def get_author_email():
     return get_output(['git', 'log', '-n', '1', '--format=%aE'])
 
 
+# Build a default changelog header, used when none is provided in the changelog.
 def get_changelog_header():
     return '{}  {}  <{}>'.format(get_date_for_changelog(),
                                  get_author_name(),
                                  get_author_email())
 
+# Build a header for a list of authors used when authors is provided in the
+# changelog.
+def build_changelog_header(authors):
+    header = '{}  {}'.format(get_date_for_changelog(),
+                             authors.pop(0))
+    for author in authors:
+        header = '{}\n\t    {}'.format(header, author)
+
+    return header
 
 def extract_changelog_entries(commit_msg):
     lines = commit_msg.split('\n')
     entries = {}
     current_changelog_file = None
+    author_search = 0
     skip = 0
 
     for line in lines:
@@ -52,8 +63,24 @@ def extract_changelog_entries(commit_msg):
             continue
 
         if current_changelog_file is not None:
+            m = re.match(r'^....-..-..  (.*  <.*@.*>)$', line)
+            m2 = re.match(r'^\t    (.*  <.*@.*>)$', line)
+            if author_search and m:
+                author = m.group(1)
+                entries[current_changelog_file]['authors'].append(author)
+                continue
+            elif author_search and m2:
+                author = m2.group(1)
+                entries[current_changelog_file]['authors'].append(author)
+                continue
+            elif author_search and entries[current_changelog_file]['authors']:
+                author_search = 0
+                continue
+            else:
+                author_search = 0
+
             if len(line) > 0 and line[0] == '\t':
-                entries[current_changelog_file].append(line)
+                entries[current_changelog_file]['lines'].append(line)
             else:
                 current_changelog_file = None
         else:
@@ -61,8 +88,12 @@ def extract_changelog_entries(commit_msg):
             if m:
                 current_changelog_file = m.group(1)
                 assert current_changelog_file not in entries
-                entries[current_changelog_file] = []
+                changelog = {}
+                changelog['authors'] = []
+                changelog['lines'] = []
+                entries[current_changelog_file] = changelog
 
+                author_search = 1
                 # Skip empty line between .../ChangeLog: and content.
                 skip = 1
 
@@ -70,9 +101,14 @@ def extract_changelog_entries(commit_msg):
 
 
 def write_changelog_entries(entries, gitroot):
-    header = get_changelog_header()
+    defheader = get_changelog_header()
 
-    for path, line_list in entries.items():
+    for path, changelog in entries.items():
+        header = defheader
+        line_list = changelog['lines']
+        if changelog['authors']:
+            header = build_changelog_header(changelog['authors'])
+
         to_add = header + '\n' + \
             '\n' + \
             '\n'.join(line_list) + \

@@ -1,5 +1,5 @@
  Description
------------
+------------
 
 `changelog-git-amend` can be used to extract the ChangeLog content from the
 message of the current commit, insert it in the appropriate ChangeLog files
@@ -22,8 +22,46 @@ path/to/otherChangeLog:
 <empty line>
 ```
 
-Example
--------
+## Example - simple
+
+```
+Fix build error in aarch64-linux-tdep.c on macOS
+
+Fix it by changing the type of the vl variable to be ULONGEST, which is what
+extract_unsigned_integer returns anyway.
+
+gdb/ChangeLog:
+
+        * aarch64-linux-tdep.c (aarch64_linux_supply_sve_regset): Change type
+        of vl to ULONGEST.
+````
+
+## Example - with authors provided
+
+Here is an example of a changelog where the author co-authors are provided.
+When applying the patches the date string `yyyy-mm-dd` will be replaced with the
+current date.
+
+```
+or1k: gcc: initial support for openrisc
+
+gcc/ChangeLog:
+
+yyyy-mm-dd  Stafford Horne  <shorne@gmail.com>
+            Richard Henderson  <rth@twiddle.net>
+            Joel Sherrill  <joel@rtems.org>
+
+        * common/config/or1k/or1k-common.c: New file.
+        * config/or1k/*: New.
+        * config.gcc (or1k*-*-*): New.
+        * configure.ac (or1k*-*-*): New test for openrisc tls.
+        * configure: Regenerated.
+        * doc/install.texi: Document OpenRISC triplets.
+        * doc/invoke.texi: Document OpenRISC arguments.
+        * doc/md.texi: Document OpenRISC.
+````
+
+## Example - running
 
 Here is an example that uses `changelog-git-amend` with `git rebase`.
 
