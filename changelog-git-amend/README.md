@@ -16,7 +16,7 @@ path/to/ChangeLog:
 <empty line>
 <tab>* ChangeLog content...
 <empty line>
-path/to/otherChangeLog:
+path/to/other/ChangeLog:
 <empty line>
 <tab>* Other ChangeLog content...
 <empty line>
